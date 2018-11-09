@@ -4,10 +4,11 @@
 void project();
 
 void project() {
-	string pathToFile = "/home/calle/MNXB01/Project/datasets/uppsala_tm_1722-2013.dat"; //Put the path to your data file here
+	string pathToFile = "/home/calle/MNXB01/Project/datasets/smhi-opendata_Lund.csv"; //Put the path to your data file here
 	tempTrender t(pathToFile); //Instantiate your analysis object
 	
-	t.tempOnDay(8, 23, 20); //Call some functions that you've implemented
+	//t.tempOnDayDat(8, 23, 20); 
+	t.tempOnDayCsv(1, 1, 1);//Call some functions that you've implemented
 	//t.tempOnDay(235);
 	//t.tempPerDay();
 	//t.hotCold();
