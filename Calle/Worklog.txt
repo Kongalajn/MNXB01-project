@@ -12,3 +12,12 @@ As before the code is tested and seems to be working as intended but
 is not yet commented.
 
 Calle - 08/11-18
+
+Managed to merge the two functions into a single function capable of 
+reading both the .csv files aswell as the .dat file. Also added an error
+message if the loaded file is of the wrong format i.e not a .dat or .csv 
+file. Finally I made the output look a little nicer with it now displaying
+which date we are looking at. The code is still not commented but is working
+fine with the files I have teste.
+
+Calle - 09/11-18
