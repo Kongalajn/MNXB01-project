@@ -6,3 +6,9 @@ The code is tested and works fine as far as I can tell it is not yet
 commented however. 
 
 Calle - 30/10-18
+
+Implemented a second function which can read file of the format .csv.
+As before the code is tested and seems to be working as intended but 
+is not yet commented.
+
+Calle - 08/11-18
