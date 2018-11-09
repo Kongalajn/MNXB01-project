@@ -4,12 +4,17 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <limits>
+#include <cstdlib>
 
 using namespace std;
 
 #include <TH1.h>
 #include <TCanvas.h>
+#include <TGraph2D.h>
+#include <TStyle.h>
+#include <TAxis.h>
 
 class tempTrender {
 	public:
@@ -20,37 +25,45 @@ class tempTrender {
 	
 	void readFile(string pathToFile) {pathToFile_ = pathToFile;}
 	
-	void tempOnDay(int monthToCalculate, int dayToCalculate, double specTemp = std::numeric_limits<double>::quiet_NaN()) {
-		ifstream file(pathToFile_);
-		TH1I* hist = new TH1I("temperature", "Temperature;Temperature[#circC];Entries", 300, -20, 40);
-		hist->SetFillColor(kRed + 1);
-		
-		int month = -1, day = -1;
-		double temp = -1;
-		while(file >> helpString) {
-			file >> month >> day >> helpString >> temp >> helpString;
-			if(month == monthToCalculate and day == dayToCalculate) {
-				hist->Fill(temp);
-			}
-		}
-		
-		if(specTemp == specTemp){
-			int binNum = hist->FindBin(specTemp);
-			double binEntries = hist->GetEntries();
-			double specBinEntries = hist->GetBinContent(binNum);
-			double tempProb = specBinEntries/binEntries;
-			cout << "Probability of temp being " << specTemp << " degrees: " << tempProb*100 << " %" << endl;
-		}
+	
+	
+	// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
+	Int_t dayNumber(Int_t year, Int_t month, Int_t day){
+		month = (month + 9) % 12;
+		year = year - month/10;
+		return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
+	;}
 
-		double mean = hist->GetMean(); //The mean of the distribution
-		double stdev = hist->GetRMS(); //The standard deviation
-		TCanvas* can = new TCanvas();
-		hist->Draw();
+	void tempSpectrogram(){
+		string line;
+		string helpString;
+		ifstream file(pathToFile_.c_str());
+
+		TCanvas* c = new TCanvas("c","Graph2D example",0,0,600,400);
+		TGraph2D* gr = new TGraph2D();
+
+		Int_t n = 0;
+		Double_t year, month, day, temp;
+		while(file.good()){
+			n++;
+			getline(file,line);
+			file >> year >> month >> day >> temp >> helpString >> helpString;
+			Int_t currentDay = dayNumber(year, month, day) - dayNumber(year, 1, 1) + 1;
+			//cout << currentDay << endl;
+			cout << n << endl;
+
+			gr->SetPoint(n,year,currentDay,temp);
 			
-		cout << "Mean temp: " << mean << endl;
-		cout << "Std Dev : " << stdev << endl;
+		}
+		file.close();
+
+		//gStyle->SetPalette(1);
 		
-	;} //Make a histogram of the temperature on this day
+	    gr->Draw("PCOL");
+	    gr->GetXaxis()->SetRangeUser(1720,2015);
+	;}
+	
+	
 	//void tempOnDay(int dateToCalculate); //Make a histogram of the temperature on this date
 	//void tempPerDay(); //Make a histogram of the average temperature of each day of the year
 	//void hotCold(); //Make a histogram of the hottest and coldest day of the year
