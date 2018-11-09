@@ -6,3 +6,11 @@ The code is tested and works fine as far as I can tell it is not yet
 commented however. 
 
 Calle - 30/10-18
+
+----------------------
+
+Adds a method called tempSpectrogram() that so far only can read the data from the uppsala file. It makes a 2d graph with the PCOL option but it can be changed to a SURF1 or whatever you feel like BUT it takes forever to draw the surfacegraphs.
+
+Will start work on a way of doing the same with the other data files.
+
+Jonas - 9/11-18
