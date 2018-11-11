@@ -65,19 +65,19 @@ class tempTrender {
 		
 		ifstream file(pathToFile_.c_str());
 		THStack *histTot = new THStack("temperature","Temperature;Year;Temperature[#circC]"); 
-		TH1I* hist2 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+		TH1D* hist2 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
 		hist2->SetFillColor(kRed + 1);
 		histTot->Add(hist2);
-		TH1I* hist3 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+		TH1D* hist3 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
 		hist3->SetFillColor(kBlue + 1);
 		histTot->Add(hist3);
-		TH1I* hist4 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+		TH1D* hist4 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
 		hist4->SetFillColor(10);
 		histTot->Add(hist4);
 		
-		TH1I* hist5 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", bincount2, 1722, 2013);
+		TH1D* hist5 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", bincount2, 1722, 2013);
 		hist5->SetFillColor(kRed + 1);
-		TH1I* hist6 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", bincount3, 1722, 2013);
+		TH1D* hist6 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", bincount3, 1722, 2013);
 		hist6->SetFillColor(kRed + 1);
 		
 		TF1* MyFit = new TF1("MyFit", "pol1", 1722, 2013);
@@ -93,8 +93,8 @@ class tempTrender {
 				file >> month >> day >> helpString >> temp >> IsOkay;
 				if(year == StartYear)
 				{
-					tempTot1 +=temp*10;
-					tempTot2 +=temp*10;
+					tempTot1 +=temp;
+					tempTot2 +=temp;
 					DayCount++;
 					DayCount2++;
 				
@@ -192,12 +192,12 @@ class tempTrender {
 		
 		
 		TCanvas* can3 = new TCanvas();
-		hist5->Draw();
-		hist5->Fit(MyFit);
+		//hist5->Draw();
+		hist5->Fit(MyFit, "Q");
 		
 		TCanvas* can4 = new TCanvas();
-		hist6->Draw();
-		hist6->Fit(MyFit2);
+		//hist6->Draw();
+		hist6->Fit(MyFit2, "Q");
 		
 	
 	
