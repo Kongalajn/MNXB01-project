@@ -1,0 +1,18 @@
+Started playing with the code and ended up basically implementing the
+tempOnDay function. The function can currently only read .dat files, specifically
+.dat files that are structured in the way the provided .dat file with
+data from Uppsala is. 
+The code is tested and works fine as far as I can tell it is not yet 
+commented however. 
+
+Calle - 30/10-18
+
+Got code from github.
+Trying to implement it for my usecase.
+
+Viktor - 8/11-18
+
+Added some code, got the binning to work on the
+tempPerYear function.
+
+Vitkor - 9/11-18
