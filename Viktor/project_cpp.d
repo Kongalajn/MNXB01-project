@@ -22,18 +22,20 @@
 ./project_cpp.so: /usr/include/root/TVectorDfwd.h
 ./project_cpp.so: /usr/include/root/TFitResultPtr.h /usr/include/root/TH2.h
 ./project_cpp.so: /usr/include/root/TMatrixFBasefwd.h
-./project_cpp.so: /usr/include/root/TMatrixDBasefwd.h
-./project_cpp.so: /usr/include/root/TGraph.h /usr/include/root/THStack.h
+./project_cpp.so: /usr/include/root/TMatrixDBasefwd.h /usr/include/root/TF1.h
+./project_cpp.so: /usr/include/root/TFormula.h /usr/include/root/TBits.h
 ./project_cpp.so: /usr/include/root/TObjArray.h
 ./project_cpp.so: /usr/include/root/TSeqCollection.h
 ./project_cpp.so: /usr/include/root/TCollection.h
-./project_cpp.so: /usr/include/root/TIterator.h /usr/include/root/TCanvas.h
-./project_cpp.so: /usr/include/root/TPad.h /usr/include/root/TVirtualPad.h
-./project_cpp.so: /usr/include/root/TAttPad.h /usr/include/root/TVirtualX.h
-./project_cpp.so: /usr/include/root/TAttText.h /usr/include/root/GuiTypes.h
-./project_cpp.so: /usr/include/root/Buttons.h /usr/include/root/TQObject.h
-./project_cpp.so: /usr/include/root/TAttBBox2D.h /usr/include/root/TPoint.h
-./project_cpp.so: /usr/include/root/TAttCanvas.h
+./project_cpp.so: /usr/include/root/TIterator.h
+./project_cpp.so: /usr/include/root/Math/ParamFunctor.h
+./project_cpp.so: /usr/include/root/TGraph.h /usr/include/root/THStack.h
+./project_cpp.so: /usr/include/root/TCanvas.h /usr/include/root/TPad.h
+./project_cpp.so: /usr/include/root/TVirtualPad.h /usr/include/root/TAttPad.h
+./project_cpp.so: /usr/include/root/TVirtualX.h /usr/include/root/TAttText.h
+./project_cpp.so: /usr/include/root/GuiTypes.h /usr/include/root/Buttons.h
+./project_cpp.so: /usr/include/root/TQObject.h /usr/include/root/TAttBBox2D.h
+./project_cpp.so: /usr/include/root/TPoint.h /usr/include/root/TAttCanvas.h
 ./project_cpp.so: /usr/include/root/TCanvasImp.h
 ./project_cpp.so: /usr/include/root/cintdictversion.h /usr/include/root/RVersion.h
 project_cpp__ROOTBUILDVERSION= 5.34/30

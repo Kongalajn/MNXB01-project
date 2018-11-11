@@ -11,6 +11,7 @@ using namespace std;
 
 #include <TH1.h>
 #include <TH2.h>
+#include <TF1.h>
 #include <TGraph.h>
 #include <THStack.h>
 #include <TCanvas.h>
@@ -58,14 +59,12 @@ class tempTrender {
 		int EndYear = 2013;
 		int IsOkay=0, year;
 		int i=1, j=1, k=1;
-		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 97, bincount3 = 58;
+		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 97, bincount3 = 57;
 		double tempTot[bincount], meanThree[bincount2]={0}, meanFive[bincount3]={0};
 		double DayCount=0, tempTot1=0, tempTot2 = 0, DayCount2=0, mean, testthree=0, testfive=0;
 		
-		cout << *meanThree << endl;
-		
 		ifstream file(pathToFile_.c_str());
-		THStack *histTot = new THStack("histTot",""); 
+		THStack *histTot = new THStack("temperature","Temperature;Year;Temperature[#circC]"); 
 		TH1I* hist2 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
 		hist2->SetFillColor(kRed + 1);
 		histTot->Add(hist2);
@@ -76,13 +75,13 @@ class tempTrender {
 		hist4->SetFillColor(10);
 		histTot->Add(hist4);
 		
-		TH1I* hist5 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 97, 1722, 2013);
+		TH1I* hist5 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", bincount2, 1722, 2013);
 		hist5->SetFillColor(kRed + 1);
-		TH1I* hist6 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 58, 1722, 2013);
+		TH1I* hist6 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", bincount3, 1722, 2013);
 		hist6->SetFillColor(kRed + 1);
 		
-		 //TF1* MyFit = new TF1("MyFit", "pol2", 1722, 2013);
-		 //TF1* MyFit2 = new TF1("MyFit2", "pol2", 1722, 2013);
+		TF1* MyFit = new TF1("MyFit", "pol1", 1722, 2013);
+		TF1* MyFit2 = new TF1("MyFit2", "pol1", 1722, 2013);
 		int month = -1, day = -1;
 		double temp = -1;
 		
@@ -94,8 +93,8 @@ class tempTrender {
 				file >> month >> day >> helpString >> temp >> IsOkay;
 				if(year == StartYear)
 				{
-					tempTot1 +=temp;
-					tempTot2 +=temp;
+					tempTot1 +=temp*10;
+					tempTot2 +=temp*10;
 					DayCount++;
 					DayCount2++;
 				
@@ -138,24 +137,21 @@ class tempTrender {
 		
 		//Trying to get the smooth curves
 		bin=1;
-		while(bin2 < bincount2+1) //While loop for average over three years
+		while(bin2 <= bincount2) //While loop for average over three years
 		{
 			for(i=0;i<3;i++)
 			{
-				cout<<"bin+i: "<<bin+i<<endl<<"tempTot:"<<tempTot[bin+i]<<endl;
-				meanThree[bin2]+=tempTot[bin+i];
-				cout<<"MeanThree[bin2]: "<<meanThree[bin2]<<endl;		
+				meanThree[bin2]+=tempTot[bin+i];		
 			}
 		testthree = meanThree[bin2];
 		testthree =testthree/3.0;
-		cout<<"bin2: "<<bin2<<endl<<"meanThree: "<<testthree<<endl;
 		hist5->SetBinContent(bin2, testthree);
 		bin+=3;
 		bin2++;
 		}
 		
 		bin=1;
-		while(bin3 < bincount3+1) //While loop for average over 5  years
+		while(bin3 <= bincount3) //While loop for average over 5  years
 		{
 			for(i=0;i<5;i++)
 			{
@@ -163,41 +159,46 @@ class tempTrender {
 			}
 		testfive = meanFive[bin3];
 		testfive =testfive/5.0;
-		//cout<<"bin3: "<<bin3<<endl<<"meanfive("<<bin3<<"): "<<testfive<<endl;
 		hist6->SetBinContent(bin3, testfive);
 		bin+=5;
 		bin3++;
 		}
 		
-		cout<<mean<<endl;
 		TCanvas* can2 = new TCanvas();
 		histTot->Draw("nostack"); //Draws the stacked histograms
 			
 		TGraph* graph = new TGraph();
+		graph->SetLineWidth(3);
 		for(int bin = 1; bin < hist5->GetNbinsX(); ++bin) 
 			{
 			graph->Expand(graph->GetN() + 1, 100);
 			graph->SetPoint(graph->GetN(), hist5->GetBinCenter(bin),
 			hist5->GetBinContent(bin));
 			}
-		graph->Draw("SAME C"); //Draws the three year average curve
+		graph->Draw("SAME C"); //Draws the three year average curve on the stacked histograms
 		
 		TGraph* graph2 = new TGraph();
+		graph2->SetLineWidth(5);
 		for(int bin = 1; bin < hist6->GetNbinsX(); ++bin) 
 			{
 			graph2->Expand(graph2->GetN() + 1, 100);
 			graph2->SetPoint(graph2->GetN(), hist6->GetBinCenter(bin),
 			hist6->GetBinContent(bin));
 			}
-		graph2->Draw("SAME C"); //Draws the five year average curve
+		graph2->Draw("SAME C"); //Draws the five year average curve on the stacked histograms
+		
+
+		
+		
 		
 		TCanvas* can3 = new TCanvas();
 		hist5->Draw();
+		hist5->Fit(MyFit);
+		
 		TCanvas* can4 = new TCanvas();
 		hist6->Draw();
+		hist6->Fit(MyFit2);
 		
-		//hist5->Fit(MyFit);
-		//MyFit->Draw();
 	
 	
 	} 

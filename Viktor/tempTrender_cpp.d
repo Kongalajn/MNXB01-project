@@ -31,11 +31,13 @@
 ./tempTrender_cpp.so: /usr/include/root/TH2.h
 ./tempTrender_cpp.so: /usr/include/root/TMatrixFBasefwd.h
 ./tempTrender_cpp.so: /usr/include/root/TMatrixDBasefwd.h
-./tempTrender_cpp.so: /usr/include/root/TGraph.h /usr/include/root/THStack.h
-./tempTrender_cpp.so: /usr/include/root/TObjArray.h
+./tempTrender_cpp.so: /usr/include/root/TF1.h /usr/include/root/TFormula.h
+./tempTrender_cpp.so: /usr/include/root/TBits.h /usr/include/root/TObjArray.h
 ./tempTrender_cpp.so: /usr/include/root/TSeqCollection.h
 ./tempTrender_cpp.so: /usr/include/root/TCollection.h
 ./tempTrender_cpp.so: /usr/include/root/TIterator.h
+./tempTrender_cpp.so: /usr/include/root/Math/ParamFunctor.h
+./tempTrender_cpp.so: /usr/include/root/TGraph.h /usr/include/root/THStack.h
 ./tempTrender_cpp.so: /usr/include/root/TCanvas.h /usr/include/root/TPad.h
 ./tempTrender_cpp.so: /usr/include/root/TVirtualPad.h
 ./tempTrender_cpp.so: /usr/include/root/TAttPad.h
