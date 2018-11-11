@@ -134,7 +134,7 @@ class tempTrender {
 		
 		//Trying to get the smooth curves
 		bin=1;
-		while(bin2 < bincount2+1)
+		while(bin2 < bincount2+1) //While loop for average over three years
 		{
 			for(i=0;i<3;i++)
 			{
@@ -150,7 +150,7 @@ class tempTrender {
 		}
 		
 		bin=1;
-		while(bin3 < bincount3+1)
+		while(bin3 < bincount3+1) //While loop for average over 5  years
 		{
 			for(i=0;i<5;i++)
 			{
