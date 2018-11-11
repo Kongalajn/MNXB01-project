@@ -56,11 +56,13 @@ class tempTrender {
 	{
 		int StartYear = 1722;
 		int EndYear = 2013;
-		int IsOkay, year;
+		int IsOkay=0, year;
 		int i=1, j=1, k=1;
 		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 97, bincount3 = 58;
-		double tempTot[bincount], meanThree[bincount2], meanFive[bincount3];
+		double tempTot[bincount], meanThree[bincount2]={0}, meanFive[bincount3]={0};
 		double DayCount=0, tempTot1=0, tempTot2 = 0, DayCount2=0, mean, testthree=0, testfive=0;
+		
+		cout << *meanThree << endl;
 		
 		ifstream file(pathToFile_.c_str());
 		THStack *histTot = new THStack("histTot",""); 
@@ -79,6 +81,8 @@ class tempTrender {
 		TH1I* hist6 = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 58, 1722, 2013);
 		hist6->SetFillColor(kRed + 1);
 		
+		 //TF1* MyFit = new TF1("MyFit", "pol2", 1722, 2013);
+		 //TF1* MyFit2 = new TF1("MyFit2", "pol2", 1722, 2013);
 		int month = -1, day = -1;
 		double temp = -1;
 		
@@ -90,8 +94,8 @@ class tempTrender {
 				file >> month >> day >> helpString >> temp >> IsOkay;
 				if(year == StartYear)
 				{
-					tempTot1 +=temp*10;
-					tempTot2 +=temp*10;
+					tempTot1 +=temp;
+					tempTot2 +=temp;
 					DayCount++;
 					DayCount2++;
 				
@@ -140,9 +144,10 @@ class tempTrender {
 			{
 				cout<<"bin+i: "<<bin+i<<endl<<"tempTot:"<<tempTot[bin+i]<<endl;
 				meanThree[bin2]+=tempTot[bin+i];
+				cout<<"MeanThree[bin2]: "<<meanThree[bin2]<<endl;		
 			}
 		testthree = meanThree[bin2];
-		testthree =testthree/3;
+		testthree =testthree/3.0;
 		cout<<"bin2: "<<bin2<<endl<<"meanThree: "<<testthree<<endl;
 		hist5->SetBinContent(bin2, testthree);
 		bin+=3;
@@ -157,8 +162,8 @@ class tempTrender {
 				meanFive[bin3]+=tempTot[bin+i];
 			}
 		testfive = meanFive[bin3];
-		testfive =testfive/5;
-		cout<<"bin3: "<<bin3<<endl<<"meanfive("<<bin3<<"): "<<testfive<<endl;
+		testfive =testfive/5.0;
+		//cout<<"bin3: "<<bin3<<endl<<"meanfive("<<bin3<<"): "<<testfive<<endl;
 		hist6->SetBinContent(bin3, testfive);
 		bin+=5;
 		bin3++;
@@ -190,7 +195,9 @@ class tempTrender {
 		hist5->Draw();
 		TCanvas* can4 = new TCanvas();
 		hist6->Draw();
-			
+		
+		//hist5->Fit(MyFit);
+		//MyFit->Draw();
 	
 	
 	} 
