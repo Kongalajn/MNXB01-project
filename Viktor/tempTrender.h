@@ -59,7 +59,7 @@ class tempTrender {
 		int EndYear = 2013;
 		int IsOkay=0, year;
 		int i=1, j=1, k=1;
-		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 97, bincount3 = 57;
+		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 57, bincount3 = 29;
 		double tempTot[bincount], meanThree[bincount2]={0}, meanFive[bincount3]={0};
 		double DayCount=0, tempTot1=0, tempTot2 = 0, DayCount2=0, mean, testthree=0, testfive=0;
 		
@@ -82,6 +82,8 @@ class tempTrender {
 		
 		TF1* MyFit = new TF1("MyFit", "pol1", 1722, 2013);
 		TF1* MyFit2 = new TF1("MyFit2", "pol1", 1722, 2013);
+		TF1* MyFunc = new TF1(); 
+		TF1* MyFunc2 = new TF1();
 		int month = -1, day = -1;
 		double temp = -1;
 		
@@ -137,30 +139,30 @@ class tempTrender {
 		
 		//Trying to get the smooth curves
 		bin=1;
-		while(bin2 <= bincount2) //While loop for average over three years
+		while(bin2 < bincount2) //While loop for average over three years
 		{
-			for(i=0;i<3;i++)
+			for(i=0;i<5;i++)
 			{
 				meanThree[bin2]+=tempTot[bin+i];		
 			}
 		testthree = meanThree[bin2];
-		testthree =testthree/3.0;
+		testthree =testthree/5.0;
 		hist5->SetBinContent(bin2, testthree);
-		bin+=3;
+		bin+=5;
 		bin2++;
 		}
 		
 		bin=1;
-		while(bin3 <= bincount3) //While loop for average over 5  years
+		while(bin3 < bincount3) //While loop for average over 5  years
 		{
-			for(i=0;i<5;i++)
+			for(i=0;i<10;i++)
 			{
 				meanFive[bin3]+=tempTot[bin+i];
 			}
 		testfive = meanFive[bin3];
-		testfive =testfive/5.0;
+		testfive =testfive/10.0;
 		hist6->SetBinContent(bin3, testfive);
-		bin+=5;
+		bin+=10;
 		bin3++;
 		}
 		
@@ -198,7 +200,6 @@ class tempTrender {
 		TCanvas* can4 = new TCanvas();
 		//hist6->Draw();
 		hist6->Fit(MyFit2, "Q");
-		
 	
 	
 	} 
