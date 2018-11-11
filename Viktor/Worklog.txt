@@ -15,4 +15,9 @@ Viktor - 8/11-18
 Added some code, got the binning to work on the
 tempPerYear function.
 
-Vitkor - 9/11-18
+Viktor - 9/11-18
+
+Trying to get the smooth curves to work, weird -nan values when averaging the temperature.
+
+Viktor -11/11-18
+
