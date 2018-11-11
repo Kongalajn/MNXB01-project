@@ -166,7 +166,7 @@ class tempTrender {
 		
 		cout<<mean<<endl;
 		TCanvas* can2 = new TCanvas();
-		histTot->Draw("nostack");
+		histTot->Draw("nostack"); //Draws the stacked histograms
 			
 		TGraph* graph = new TGraph();
 		for(int bin = 1; bin < hist5->GetNbinsX(); ++bin) 
@@ -175,7 +175,7 @@ class tempTrender {
 			graph->SetPoint(graph->GetN(), hist5->GetBinCenter(bin),
 			hist5->GetBinContent(bin));
 			}
-		graph->Draw("SAME C");
+		graph->Draw("SAME C"); //Draws the three year average curve
 		
 		TGraph* graph2 = new TGraph();
 		for(int bin = 1; bin < hist6->GetNbinsX(); ++bin) 
@@ -184,7 +184,7 @@ class tempTrender {
 			graph2->SetPoint(graph2->GetN(), hist6->GetBinCenter(bin),
 			hist6->GetBinContent(bin));
 			}
-		graph2->Draw("SAME C");
+		graph2->Draw("SAME C"); //Draws the five year average curve
 		
 		TCanvas* can3 = new TCanvas();
 		hist5->Draw();
