@@ -1,0 +1,21 @@
+Attempts to make code work//Alex Wyke
+
+8/11
+Make basic pseudocode - nothing advanced, but idea grows. Main problem: getting file to read. How to extract dates
+as anything but strings? Logically made, but hard to crack.
+
+9/11
+Code that is essentially nothing but errors created - basic idea. Make monthday offset - 
+for each passing month, add the previous month's days to the total, so you end up with day of year.
+Realize I don't need to concern myself with file ending as previously thought - as long as data structure
+is the same, .dat and .csv can be read without problem. Can probably read different with some minor modification.
+Later problem.
+
+10/11
+getline to extract strings from datafile - how to make into floats and ints?
+Make solid way to handle iteration - find each hottest/coldest day and iterate day from this.
+Added histograms, made 2 that combine into a total for presentation - does not yet work.
+
+11/11-12/11
+Scrap previous hottest/coldest loops. Realized it only increased days on days that a new record is reached.
+Got help, turned getline to old C code to turn strings as elements in vector into integers.
