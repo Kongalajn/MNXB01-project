@@ -31,4 +31,9 @@ of a string which again had to do with me using c++11. Made some small changes t
 the bash output and added a title to the histogram. Added an error message if the 
 path does not lead to a .csv or .dat file. Code is working fine and is semi-commented.
 
+Calle - 10/11-18
+
+Put some finishing touches on the function such as removing the title I added and adding 
+a legend instead. Also finished commenting the code
+
 Calle - 11/11-18
