@@ -1,0 +1,34 @@
+Started playing with the code and ended up basically implementing the
+tempOnDay function. The function can currently only read .dat files, specifically
+.dat files that are structured in the way the provided .dat file with
+data from Uppsala is. 
+The code is tested and works fine as far as I can tell it is not yet 
+commented however. 
+
+Calle - 30/10-18
+
+Implemented a second function which can read file of the format .csv.
+As before the code is tested and seems to be working as intended but 
+is not yet commented.
+
+Calle - 08/11-18
+
+Managed to merge the two functions into a single function capable of 
+reading both the .csv files aswell as the .dat file. Also added an error
+message if the loaded file is of the wrong format i.e not a .dat or .csv 
+file. Finally I made the output look a little nicer with it now displaying
+which date we are looking at. The code is still not commented but is working
+fine with the files I have tested.
+
+Calle - 09/11-18
+
+Fixed an issue with the code not being able to read all .csv files as they
+are not all formated precisely the same. Had to remove stod() and to_string()
+as they are not available pre c++11 and my project partners are using an earlier
+version. I am now using stringstream to do these operations instead. Also had to 
+change the argument of when loading the file with ifstream to a const char instead
+of a string which again had to do with me using c++11. Made some small changes to 
+the bash output and added a title to the histogram. Added an error message if the 
+path does not lead to a .csv or .dat file. Code is working fine and is semi-commented.
+
+Calle - 11/11-18
