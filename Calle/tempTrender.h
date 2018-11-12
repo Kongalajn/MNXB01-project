@@ -149,17 +149,24 @@ class tempTrender {
 		file.close();
 		
 		gStyle->SetPalette(1);
+		
+		// Very stupid attempt of making the SetRangeUser actually show the right range...
+		Int_t stupidVar = 10;
+		
+		if(endYear - startYear < 60){
+			stupidVar = (endYear - startYear)/2;
+		}
 
 		//gr->Draw("PCOL");
 
 		// This SetRangeUser thing really is a mystery to me. It lives its own life. 
-		gr->GetXaxis()->SetRangeUser(startYear,endYear);
+		gr->GetXaxis()->SetRangeUser(startYear+stupidVar,endYear-stupidVar);
 		gr->GetXaxis()->SetTitle("Year");
 		gr->GetYaxis()->SetTitle("Day of the Year");
 		gr->GetZaxis()->SetTitle("Degrees Celsius");
 		gr->SetMarkerStyle(7);
-	    gr->Draw("PCOL");
-	    //c->Update();
+	        gr->Draw("PCOL");
+	        //c->Update();
 	;}
 
 	//void tempOnDay(int dateToCalculate); //Make a histogram of the temperature on this date
