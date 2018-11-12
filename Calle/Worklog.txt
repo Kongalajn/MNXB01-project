@@ -13,6 +13,12 @@ is not yet commented.
 
 Calle - 08/11-18
 
+Adds a method called tempSpectrogram() that so far only can read the data from the uppsala file. It makes a 2d graph with the PCOL option but it can be changed to a SURF1 or whatever you feel like BUT it takes forever to draw the surfacegraphs.
+
+Will start work on a way of doing the same with the other data files.
+
+Jonas - 9/11-18
+
 Managed to merge the two functions into a single function capable of 
 reading both the .csv files aswell as the .dat file. Also added an error
 message if the loaded file is of the wrong format i.e not a .dat or .csv 
@@ -32,6 +38,20 @@ the bash output and added a title to the histogram. Added an error message if th
 path does not lead to a .csv or .dat file. Code is working fine and is semi-commented.
 
 Calle - 10/11-18
+
+The method tempSpectrogram has changed name to DataView3D.
+The DataView3D(Int_t startYear, Int_t endYear, bool isUppsala, Int_t startTime=666, Int_t endTime=666)
+plots a 2D/3D graph that shows the data points in a window specified by the user.
+The first two arguments specify between which year to look, the third argument is true if
+you want to look at the uppsala data, else its false.
+The two last arguments are only for the CSV files. There you can specify which timewindow
+of the day you want to view datapoints from.
+
+There seems to be some very mysterious problem with how the range of the axis are set, sometimes
+it works and sometimes it doesnt. I have not been able to figure out why this is. 
+Also, for some reason the graph can only show points, if I try to make a surface plot it becomes a flat surface at 0...
+
+Jonas - 10/11-18
 
 Put some finishing touches on the function such as removing the title I added and adding 
 a legend instead. Also finished commenting the code
