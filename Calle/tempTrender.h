@@ -5,6 +5,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <limits>
+#include <vector>
 #include <cstdlib>
 
 using namespace std;
@@ -12,6 +15,14 @@ using namespace std;
 #include <TH1.h>
 #include <TCanvas.h>
 #include <TLegend.h> 
+#include <TH2.h>
+#include <TF1.h>
+#include <TGraph.h>
+#include <THStack.h>
+#include <TGraph2D.h>
+#include <TStyle.h>
+#include <TAxis.h>
+#include <TROOT.h>
 
 class tempTrender {
 	public:
@@ -35,7 +46,7 @@ class tempTrender {
 		specTemp (double, optional): input to compute probability of temp
 			being the input temp on the input day.	 
 	*/
-	void tempOnDay(int dayToCalculate, int monthToCalculate, double specTemp = std::numeric_limits<double>::quiet_NaN()) {
+	void tempOnDay(int dayToCalculate, int monthToCalculate, double specTemp = numeric_limits<double>::quiet_NaN()) {
 		// Checking if the file format is correct
 		string fileType = pathToFile_.substr(pathToFile_.length() - 4);
 		if(fileType == ".dat" || fileType  == ".csv"){
@@ -190,7 +201,7 @@ class tempTrender {
 		else cout << "Cannot read file format" << endl;
 	;}
 
-	void tempPerYear(int yearToExtrapolate)//Make a histogram of average temperature per year, then fit and extrapolate to the given year
+	void tempPerYear(int yearToExtrapolate)//Make a histogram of average temperature per year, then fit and extrapolate to the given year (tried to)
 	{
 		int StartYear = 1722;
 		int EndYear = 2013;
@@ -199,154 +210,166 @@ class tempTrender {
 		int bin=1, bin2=1, bin3=1, bincount = 292, bincount2 = 57, bincount3 = 29;
 		double tempTot[bincount], meanThree[bincount2]={0}, meanFive[bincount3]={0};
 		double DayCount=0, tempTot1=0, tempTot2 = 0, DayCount2=0, mean, testthree=0, testfive=0;
+		string helpString;
 		
-		ifstream file(pathToFile_.c_str());
-		THStack *histTot = new THStack("temperature","Temperature;Year;Temperature[#circC]"); 
-		TH1D* hist2 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
-		hist2->SetFillColor(kRed + 1);
-		histTot->Add(hist2);
-		TH1D* hist3 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
-		hist3->SetFillColor(kBlue + 1);
-		histTot->Add(hist3);
-		TH1D* hist4 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
-		hist4->SetFillColor(10);
-		histTot->Add(hist4);
-		
-		TH1D* hist5 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", bincount2, 1722, 2013);
-		hist5->SetFillColor(kRed + 1);
-		TH1D* hist6 = new TH1D("temperature", "Temperature;Year;Temperature[#circC]", bincount3, 1722, 2013);
-		hist6->SetFillColor(kRed + 1);
-		
-		TF1* MyFit = new TF1("MyFit", "pol1", 1722, 2013);
-		TF1* MyFit2 = new TF1("MyFit2", "pol1", 1722, 2013);
-		TF1* MyFunc = new TF1(); 
-		TF1* MyFunc2 = new TF1();
-		int month = -1, day = -1;
-		double temp = -1;
-		
-		while(StartYear < EndYear) 
-		{
+		string fileType = pathToFile_.substr(pathToFile_.length() - 4);
+		if(fileType == ".dat"){
 			
-			while(file >> year) 
+			ifstream file(pathToFile_.c_str());
+			THStack *histTot = new THStack("temperature","Temperature;Year;Temperature[#circC]"); 
+			TH1D* hist2 = new TH1D("temperature1", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+			hist2->SetFillColor(kRed + 1);
+			histTot->Add(hist2);
+			TH1D* hist3 = new TH1D("temperature2", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+			hist3->SetFillColor(kBlue + 1);
+			histTot->Add(hist3);
+			TH1D* hist4 = new TH1D("temperature3", "Temperature;Year;Temperature[#circC]", 292, 1722, 2013);
+			hist4->SetFillColor(10);
+			histTot->Add(hist4);
+			
+			TH1D* hist5 = new TH1D("temperature4", "Temperature;Year;Temperature[#circC]", bincount2, 1722, 2013);
+			hist5->SetFillColor(kRed + 1);
+			TH1D* hist6 = new TH1D("temperature5", "Temperature;Year;Temperature[#circC]", bincount3, 1722, 2013);
+			hist6->SetFillColor(kRed + 1);
+			
+			TF1* MyFit = new TF1("MyFit", "pol1", 1722, 2013);
+			TF1* MyFit2 = new TF1("MyFit2", "pol1", 1722, 2013);
+			TF1* MyFunc = new TF1(); 
+			TF1* MyFunc2 = new TF1();
+			int month = -1, day = -1;
+			double temp = -1;
+			
+			while(StartYear < EndYear) 
 			{
-				file >> month >> day >> helpString >> temp >> IsOkay;
-				if(year == StartYear)
-				{
-					tempTot1 +=temp;
-					tempTot2 +=temp;
-					DayCount++;
-					DayCount2++;
 				
-				
-				}
-				else 
+				while(file >> year) 
 				{
-					tempTot[bin] = tempTot1/=DayCount;
-
-					bin++;
-					DayCount = 0;
-					StartYear++;
-				}
-			}
-			tempTot[bin] = tempTot1/=DayCount;
-		}
-		
-		//Making the Stacked histograms
-		mean = tempTot2/DayCount2;
-		bin=1;
-		while(bin <= bincount)
-		{
-			if (tempTot[bin] > mean)
-			{
-				hist2->SetBinContent(bin, tempTot[bin]);
-				hist4->SetBinContent(bin, mean);
-			}
-			else if (tempTot[bin] < mean)
-			{
-				hist3->SetBinContent(bin, mean);
-				hist4->SetBinContent(bin, tempTot[bin]);
+					file >> month >> day >> helpString >> temp >> IsOkay;
+					if(year == StartYear)
+					{
+						tempTot1 +=temp;
+						tempTot2 +=temp;
+						DayCount++;
+						DayCount2++;
 					
-			}
-			else if(tempTot[bin] == mean)
-			{
-				hist4->SetBinContent(bin, mean);
-			}
-			bin++;
-		}
-		
-		//Trying to get the smooth curves
-		bin=1;
-		while(bin2 < bincount2) //While loop for average over three years
-		{
-			for(i=0;i<5;i++)
-			{
-				meanThree[bin2]+=tempTot[bin+i];		
-			}
-		testthree = meanThree[bin2];
-		testthree =testthree/5.0;
-		hist5->SetBinContent(bin2, testthree);
-		bin+=5;
-		bin2++;
-		}
-		
-		bin=1;
-		while(bin3 < bincount3) //While loop for average over 5  years
-		{
-			for(i=0;i<10;i++)
-			{
-				meanFive[bin3]+=tempTot[bin+i];
-			}
-		testfive = meanFive[bin3];
-		testfive =testfive/10.0;
-		hist6->SetBinContent(bin3, testfive);
-		bin+=10;
-		bin3++;
-		}
-		
-		TCanvas* can2 = new TCanvas();
-		histTot->Draw("nostack"); //Draws the stacked histograms
-			
-		TGraph* graph = new TGraph();
-		graph->SetLineWidth(3);
-		for(int bin = 1; bin < hist5->GetNbinsX(); ++bin) 
-			{
-			graph->Expand(graph->GetN() + 1, 100);
-			graph->SetPoint(graph->GetN(), hist5->GetBinCenter(bin),
-			hist5->GetBinContent(bin));
-			}
-		graph->Draw("SAME C"); //Draws the three year average curve on the stacked histograms
-		
-		TGraph* graph2 = new TGraph();
-		graph2->SetLineWidth(5);
-		for(int bin = 1; bin < hist6->GetNbinsX(); ++bin) 
-			{
-			graph2->Expand(graph2->GetN() + 1, 100);
-			graph2->SetPoint(graph2->GetN(), hist6->GetBinCenter(bin),
-			hist6->GetBinContent(bin));
-			}
-		graph2->Draw("SAME C"); //Draws the five year average curve on the stacked histograms
-		
+					
+					}
+					else 
+					{
+						tempTot[bin] = tempTot1/=DayCount;
 
+						bin++;
+						DayCount = 0;
+						StartYear++;
+					}
+				}
+				tempTot[bin] = tempTot1/=DayCount;
+			}
+			
+			//Making the Stacked histograms
+			mean = tempTot2/DayCount2;
+			bin=1;
+			while(bin <= bincount)
+			{
+				if (tempTot[bin] > mean)
+				{
+					hist2->SetBinContent(bin, tempTot[bin]);
+					hist4->SetBinContent(bin, mean);
+				}
+				else if (tempTot[bin] < mean)
+				{
+					hist3->SetBinContent(bin, mean);
+					hist4->SetBinContent(bin, tempTot[bin]);
+						
+				}
+				else if(tempTot[bin] == mean)
+				{
+					hist4->SetBinContent(bin, mean);
+				}
+				bin++;
+			}
+			
+			//Trying to get the smooth curves
+			bin=1;
+			while(bin2 < bincount2) //While loop for average over three years
+			{
+				for(i=0;i<5;i++)
+				{
+					meanThree[bin2]+=tempTot[bin+i];		
+				}
+			testthree = meanThree[bin2];
+			testthree =testthree/5.0;
+			hist5->SetBinContent(bin2, testthree);
+			bin+=5;
+			bin2++;
+			}
+			
+			bin=1;
+			while(bin3 < bincount3) //While loop for average over 5  years
+			{
+				for(i=0;i<10;i++)
+				{
+					meanFive[bin3]+=tempTot[bin+i];
+				}
+			testfive = meanFive[bin3];
+			testfive =testfive/10.0;
+			hist6->SetBinContent(bin3, testfive);
+			bin+=10;
+			bin3++;
+			}
+			
+			TCanvas* can2 = new TCanvas();
+			histTot->Draw("nostack"); //Draws the stacked histograms
+				
+			TGraph* graph = new TGraph();
+			graph->SetLineWidth(3);
+			for(int bin = 1; bin < hist5->GetNbinsX(); ++bin) 
+				{
+				graph->Expand(graph->GetN() + 1, 100);
+				graph->SetPoint(graph->GetN(), hist5->GetBinCenter(bin),
+				hist5->GetBinContent(bin));
+				}
+			graph->Draw("SAME C"); //Draws the three year average curve on the stacked histograms
+			
+			TGraph* graph2 = new TGraph();
+			graph2->SetLineWidth(5);
+			for(int bin = 1; bin < hist6->GetNbinsX(); ++bin) 
+				{
+				graph2->Expand(graph2->GetN() + 1, 100);
+				graph2->SetPoint(graph2->GetN(), hist6->GetBinCenter(bin),
+				hist6->GetBinContent(bin));
+				}
+			graph2->Draw("SAME C"); //Draws the five year average curve on the stacked histograms
+			
+
+			
+			
+			
+			TCanvas* can3 = new TCanvas();
+			//hist5->Draw();
+			hist5->Fit(MyFit, "Q");
+			
+			TCanvas* can4 = new TCanvas();
+			//hist6->Draw();
+			hist6->Fit(MyFit2, "Q");
+			
 		
 		
+		}
+		else
+		{
+			cout<<"Wrong file format!"<<endl;
+		} 
+	}
+		 
 		
-		TCanvas* can3 = new TCanvas();
-		//hist5->Draw();
-		hist5->Fit(MyFit, "Q");
+		// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
+		// Returns the day of the year starting from the 1st of january being day 1
+		Int_t dayNumber(Int_t year, Int_t month, Int_t day){
+			month = (month + 9) % 12;
+			year = year - month/10;
+			return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
 		
-		TCanvas* can4 = new TCanvas();
-		//hist6->Draw();
-		hist6->Fit(MyFit2, "Q");
-	
-	
-	} 
-	
-	// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
-	// Returns the day of the year starting from the 1st of january being day 1
-	Int_t dayNumber(Int_t year, Int_t month, Int_t day){
-		month = (month + 9) % 12;
-		year = year - month/10;
-		return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
 	;}
 
 
@@ -479,133 +502,133 @@ class tempTrender {
 		gr->GetYaxis()->SetTitle("Day of the Year");
 		gr->GetZaxis()->SetTitle("Degrees Celsius");
 		gr->SetMarkerStyle(7);
-	        gr->Draw("PCOL");
+		gr->Draw("PCOL");
 	        //c->Update();
 	;}
 
 	
-	void hotCold(int year, int day, float hot, float cold){ //Make a histogram of the hottest and coldest day of the year
-		//Not currently functional.
+	//void hotCold(int year, int day, float hot, float cold){ //Make a histogram of the hottest and coldest day of the year
+		////Not currently functional.
 		
-		// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
-		// Returns the day of the year starting from the 1st of january being day 1
-		Int_t dayNumber(Int_t year, Int_t month, Int_t day){
-			month = (month + 9) % 12;
-			year = year - month/10;
-			return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
-		;}
+		//// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
+		//// Returns the day of the year starting from the 1st of january being day 1
+		//Int_t dayNumber(Int_t year, Int_t month, Int_t day){
+			//month = (month + 9) % 12;
+			//year = year - month/10;
+			//return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
+		//;}
 
 
-		// Input is a string which you want to split into a vector.
-		// The seperation is defined in the second argument
-		vector<string> split(const char *str, char c = ' '){
-			vector<string> result;
+		//// Input is a string which you want to split into a vector.
+		//// The seperation is defined in the second argument
+		//vector<string> split(const char *str, char c = ' '){
+			//vector<string> result;
 	
-			do
-			{
-	        const char *begin = str;
+			//do
+			//{
+	        //const char *begin = str;
 
-	        while(*str != c && *str)
-	            str++;
+	        //while(*str != c && *str)
+	            //str++;
 
-	        result.push_back(string(begin, str));
-	    } while (0 != *str++);
+	        //result.push_back(string(begin, str));
+	    //} while (0 != *str++);
 
-	    return result;
-;}
+	    //return result;
+//;}
 		
-		int hottest[3000], hottestTemp[3000], hottestDay[3000], coldest[3000], coldestTemp[3000], coldestDay[3000];
-		//int myint = stoi(day)
+		//int hottest[3000], hottestTemp[3000], hottestDay[3000], coldest[3000], coldestTemp[3000], coldestDay[3000];
+		////int myint = stoi(day)
 		
-		for(int i = 0; i <3000; i++) { //Reset temperatures
-			hottestTemp[i] = -1000; // really cold
-			coldestTemp[i] = 1000; // really hot
-		}
+		//for(int i = 0; i <3000; i++) { //Reset temperatures
+			//hottestTemp[i] = -1000; // really cold
+			//coldestTemp[i] = 1000; // really hot
+		//}
 	
-		if(pathToFile_.substr(pathToFile_.length() - 4) == ".dat" || pathToFile_.substr(pathToFile_.length() - 4) == ".csv"){
+		//if(pathToFile_.substr(pathToFile_.length() - 4) == ".dat" || pathToFile_.substr(pathToFile_.length() - 4) == ".csv"){
 	
-			ifstream file(pathToFile_);
+			//ifstream file(pathToFile_);
 			
-			THStack *histTot = new THStack("histTot","");
-			TH1I* histHot = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 366, 1, 366);
-			histHot->SetFillColor(kRed + 1);
-			histTot->Add(histHot);
-			TH1I* histCold = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 366, 1, 366);
-			histCold->SetFillColor(kBlue + 1);
-			histTot->Add(histCold);
+			//THStack *histTot = new THStack("histTot","");
+			//TH1I* histHot = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 366, 1, 366);
+			//histHot->SetFillColor(kRed + 1);
+			//histTot->Add(histHot);
+			//TH1I* histCold = new TH1I("temperature", "Temperature;Year;Temperature[#circC]", 366, 1, 366);
+			//histCold->SetFillColor(kBlue + 1);
+			//histTot->Add(histCold);
 		
-			double temp = -1;
-			float maxTemp = 0, minTemp = 0;
-			int year, month, day;
-			string sTemp, isOK;
+			//double temp = -1;
+			//float maxTemp = 0, minTemp = 0;
+			//int year, month, day;
+			//string sTemp, isOK;
 			
-			if (file.is_open()) {
-					getline(file, sTemp, ';');
-					getline(file, isOK);
+			//if (file.is_open()) {
+					//getline(file, sTemp, ';');
+					//getline(file, isOK);
 					
-					//Separating the data
-					replace(line.begin(), line.end(), '-', ' ');
-					replace(line.begin(), line.end(), ';', ' ');
-					replace(line.begin(), line.end(), ':', ' ');
+					////Separating the data
+					//replace(line.begin(), line.end(), '-', ' ');
+					//replace(line.begin(), line.end(), ';', ' ');
+					//replace(line.begin(), line.end(), ':', ' ');
 
-					vector<string> elements = split(line.c_str(), ' ');
+					//vector<string> elements = split(line.c_str(), ' ');
 
-					//Gget integers from the vector<string>
-					year = atoi(elements[0].c_str());
-					month = atoi(elements[1].c_str());
-					day = atoi(elements[2].c_str());
+					////Gget integers from the vector<string>
+					//year = atoi(elements[0].c_str());
+					//month = atoi(elements[1].c_str());
+					//day = atoi(elements[2].c_str());
 
-					// Since we replace the '-' sign with ' ', the negative values will be shifted one index
-					// They can be retrived by the following logic where if both index 6 & 7 are equal,
-					// the temperature must be zero.
-					if(atof(elements[6].c_str()) > 0){
-						temp = atof(elements[6].c_str());
-					}
-					else if(atof(elements[6].c_str()) == atof(elements[7].c_str())){
-						temp = 0;
-					}
-					else{
-						temp = -atof(elements[7].c_str());
-					}
-					// Clearing the vector afterwards
-					elements.clear();
+					//// Since we replace the '-' sign with ' ', the negative values will be shifted one index
+					//// They can be retrived by the following logic where if both index 6 & 7 are equal,
+					//// the temperature must be zero.
+					//if(atof(elements[6].c_str()) > 0){
+						//temp = atof(elements[6].c_str());
+					//}
+					//else if(atof(elements[6].c_str()) == atof(elements[7].c_str())){
+						//temp = 0;
+					//}
+					//else{
+						//temp = -atof(elements[7].c_str());
+					//}
+					//// Clearing the vector afterwards
+					//elements.clear();
 					
-					if(isOK == "G"){ //If the data is deemed correct, check if the current temperature 
-									//is higher or lower than the previous maximum/minimum
-						if(temp > hottest[year]) {
-							hottestTemp[year] = temp;
-							hottestDay[year] = day;
-						}
+					//if(isOK == "G"){ //If the data is deemed correct, check if the current temperature 
+									////is higher or lower than the previous maximum/minimum
+						//if(temp > hottest[year]) {
+							//hottestTemp[year] = temp;
+							//hottestDay[year] = day;
+						//}
 					
-						if(temp < coldest[year]) {
-							coldestTemp[year] = temp;
-							coldestDay[year] = day;
-						}
+						//if(temp < coldest[year]) {
+							//coldestTemp[year] = temp;
+							//coldestDay[year] = day;
+						//}
 					
-				}
+				//}
 				
-				file.close();
+				//file.close();
 				
-				for(int y=1900;y<2050;y++) { //Forms histograms based on previously read data
+				//for(int y=1900;y<2050;y++) { //Forms histograms based on previously read data
 					
-					if (hottestTemp[y] != -1000) {
-						histHot->Fill(hottestDay[y]);
-					}
+					//if (hottestTemp[y] != -1000) {
+						//histHot->Fill(hottestDay[y]);
+					//}
 					
-					if (coldestTemp[y] != 1000) {
-						histCold->Fill(coldestDay[y]);
-					}
-				}
+					//if (coldestTemp[y] != 1000) {
+						//histCold->Fill(coldestDay[y]);
+					//}
+				//}
 				
-				TCanvas* can2 = new Tcanvas();
-				histTot-> Draw();
+				//TCanvas* can2 = new Tcanvas();
+				//histTot-> Draw();
 			
-			}
+			//}
 			
-			else {cout << "Unable to open file" << endl;}
+			//else {cout << "Unable to open file" << endl;}
 		
-		}
-	}
+		//}
+	//}
 	private:
 	string pathToFile_;
 };
