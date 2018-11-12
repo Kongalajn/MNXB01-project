@@ -13,26 +13,27 @@
 using namespace std;
 
 #include <TH1.h>
-#include <TCanvas.h>
-#include <TLegend.h> 
-#include <TH2.h>
 #include <TF1.h>
+#include <TCanvas.h>
+#include <TLegend.h>
 #include <TGraph.h>
-#include <THStack.h>
 #include <TGraph2D.h>
 #include <TStyle.h>
 #include <TAxis.h>
 #include <TROOT.h>
+#include <THStack.h>
+
 
 class tempTrender {
 	public:
+	string helpString;
 	
 	tempTrender(string pathToFile); //Construct using the specified file
 	~tempTrender() {} //Destructor
 	
-	//Creating a private file path variable
 	void readFile(string pathToFile) {pathToFile_ = pathToFile;}
-	
+
+
 	/*
 	 Creates a histogram of the temperature on a given day over the years.
 		The mean temperature as well as the standard deviation is also 
@@ -360,16 +361,17 @@ class tempTrender {
 		{
 			cout<<"Wrong file format!"<<endl;
 		} 
-	}
-		 
-		
-		// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
-		// Returns the day of the year starting from the 1st of january being day 1
-		Int_t dayNumber(Int_t year, Int_t month, Int_t day){
-			month = (month + 9) % 12;
-			year = year - month/10;
-			return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
-		
+	;}
+
+
+
+	
+	// algorithm from: https://alcor.concordia.ca//~gpkatch/gdate-algorithm.html
+	// Returns the day of the year starting from the 1st of january being day 1
+	Int_t dayNumber(Int_t year, Int_t month, Int_t day){
+		month = (month + 9) % 12;
+		year = year - month/10;
+		return 365*year + year/4 - year/100 + year/400 + (month*306 + 5)/10 + ( day - 1 );
 	;}
 
 
@@ -486,6 +488,7 @@ class tempTrender {
 		file.close();
 		
 		gStyle->SetPalette(1);
+
 		
 		// Very stupid attempt of making the SetRangeUser actually show the right range...
 		Int_t stupidVar = 10;
@@ -493,7 +496,6 @@ class tempTrender {
 		if(endYear - startYear < 60){
 			stupidVar = (endYear - startYear)/2;
 		}
-
 		//gr->Draw("PCOL");
 
 		// This SetRangeUser thing really is a mystery to me. It lives its own life. 
@@ -502,11 +504,21 @@ class tempTrender {
 		gr->GetYaxis()->SetTitle("Day of the Year");
 		gr->GetZaxis()->SetTitle("Degrees Celsius");
 		gr->SetMarkerStyle(7);
-		gr->Draw("PCOL");
-	        //c->Update();
+	    gr->Draw("PCOL");
+	    //c->Update();
 	;}
 
 	
+	private:
+	string pathToFile_;
+};
+
+#endif
+	
+
+
+
+
 	//void hotCold(int year, int day, float hot, float cold){ //Make a histogram of the hottest and coldest day of the year
 		////Not currently functional.
 		
@@ -629,8 +641,3 @@ class tempTrender {
 		
 		//}
 	//}
-	private:
-	string pathToFile_;
-};
-
-#endif
