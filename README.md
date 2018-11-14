@@ -26,3 +26,6 @@ There seems to be some very mysterious problem with how the range of the axis ar
 it works and sometimes it doesnt. I have not been able to figure out why this is.
 
 #######################################
+
+A short docstring of what tempOnDay does and which input parameters it accepts is found on lines 38-48 in tempTrender.h.
+Some further comments on what specific code blocks in the function can be found throughout the function.
